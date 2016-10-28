@@ -1,0 +1,57 @@
+"Name"             = 'DataGenParser'
+"Version"          = '0.1'
+"Author"           = 'Reinier Napoles Martinez'
+"About"            = 'DataGen parser.'
+
+!"Auto WhiteSpace"    = False
+"Case Sensitive"   = True
+"Start Symbol"     = <Calculations>
+
+Comment Start      = '/*'
+Comment End        = '*/'
+Comment Line       = '//' | 'REM' | '#' | '--' | ''
+
+!EOL                   = {CR}{LF} | {CR} | {LF}
+
+{Id Head}        = {Letter} + [_]
+{Id Tail}        = {Id Head} + {Digit}
+
+{String Ch}      = {Printable} - ["]
+{Char Ch}        = {Printable} - ['']
+
+DecLiteral       = [123456789]{digit}*
+FloatLiteral     = {Digit}*'.'{Digit}+
+
+StringLiteral    = '"'( {String Ch} | '\'{Printable} )* '"'
+!CharLiteral      = '' ( {Char Ch} | '\'{Printable} )''
+
+Id               = {Id Head}{Id Tail}*
+
+<Calculations>   ::= <Expression> <Calculations>
+                   !| EOL
+             |  
+
+<Expression>     ::= <AddExpr>
+              | SynError
+
+<AddExpr>       ::= <MulExpr>
+              | <AddExpr> <AddOp> <MulExpr>
+
+<MulExpr>       ::= <Factor>
+              | <MulExpr> <MulOp> <Factor>
+
+
+<Factor>        ::= DecLiteral
+              | FloatLiteral
+              | StringLiteral
+              | Id '(' <Params> ')'
+              | '(' <Expression> ')'
+              | '+' <Factor>
+              | '-' <Factor>
+
+<AddOp>          ::= '+' |'-'
+<MulOp>          ::='*' | '/'
+
+<Params>     ::= <Expression> ',' <Params>
+               | <Expression>
+               |
