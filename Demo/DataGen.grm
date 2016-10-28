@@ -50,7 +50,7 @@ Id               = {Id Head}{Id Tail}*
               | '-' <Factor>
 
 <AddOp>          ::= '+' |'-'
-<MulOp>          ::='*' | '/'
+<MulOp>          ::= '*' | '/'
 
 <Params>     ::= <Expression> ',' <Params>
                | <Expression>
